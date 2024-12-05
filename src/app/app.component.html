@@ -4,7 +4,8 @@
           <div style="font-size: 1.5em;" class="nav-bar-items"><br>memories</div>
       </div>
       <div id="nav-bar-right">
-          <div class="nav-bar-items"><br>Acceder</div>
+          <div *ngIf="!conectado()" (click)="accederClick()" class="nav-bar-items"><br>Acceder</div>
+          <div *ngIf="conectado()" (click)="salirClick()" class="nav-bar-items">Salir</div>
           
       </div>
   </div>

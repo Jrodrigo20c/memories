@@ -1,5 +1,6 @@
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatCardModule } from '@angular/material/card';
 import { FirebaseTSAuth } from 'firebasets/firebasetsAuth/firebaseTSAuth';
 
@@ -13,7 +14,7 @@ import { FirebaseTSAuth } from 'firebasets/firebasetsAuth/firebaseTSAuth';
 export class AutenticadorComponent {
   state = AutenticadorCompState.LOGIN;
   firebasetsAuth: FirebaseTSAuth;
-  constructor(){
+  constructor(private bottomSheetRef: MatBottomSheetRef){
     this.firebasetsAuth = new FirebaseTSAuth();
   }
 
@@ -34,7 +35,7 @@ export class AutenticadorComponent {
             email: correo,
             password: contrasena,
             onComplete: (uc) => {
-              alert("Bienvenido!!")
+              this.bottomSheetRef.dismiss();
             },
             onFail: (err) => {
               alert("Usuario o contraseña equivocado")
@@ -64,10 +65,7 @@ export class AutenticadorComponent {
         email: correo,
         password: contrasena,
         onComplete: (uc) => {
-          alert("Tu cuenta fue creada satisfactoriamente");
-          registroCorreo.value = "";
-          registroContrasena.value = "";
-          registroConfirmarContrasena.value = ""
+          this.bottomSheetRef.dismiss();
         },
         onFail: (err) => {
           alert("Error al crear tu cuenta (mucho papeleo, ingresa bien tus datos❌)");
@@ -88,7 +86,7 @@ export class AutenticadorComponent {
         {
           email: correo,
           onComplete: (err) => {
-            alert('Por favor revisar tu correo para recuperar su cuenta');
+            this.bottomSheetRef.dismiss();
           }
         }
       );
