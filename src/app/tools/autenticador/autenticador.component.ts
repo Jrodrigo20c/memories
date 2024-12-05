@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { FirebaseTSAuth } from 'firebasets/firebasetsAuth/firebaseTSAuth';
 
 @Component({
   selector: 'app-autenticador',
@@ -11,13 +12,101 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class AutenticadorComponent {
   state = AutenticadorCompState.LOGIN;
-  constructor(){}
+  firebasetsAuth: FirebaseTSAuth;
+  constructor(){
+    this.firebasetsAuth = new FirebaseTSAuth();
+  }
+
   ngOnInit(): void {}
+
+  login(
+    loginCorreo: HTMLInputElement,
+    loginContrasena: HTMLInputElement,
+  ){
+    let correo = loginCorreo.value;
+    let contrasena = loginContrasena.value;
+
+    if(
+      this.isNotEmpty(correo)&&
+      this.isNotEmpty(contrasena)){
+        this.firebasetsAuth.signInWith(
+          {
+            email: correo,
+            password: contrasena,
+            onComplete: (uc) => {
+              alert("Bienvenido!!")
+            },
+            onFail: (err) => {
+              alert("Usuario o contraseña equivocado")
+            }
+          }
+        );
+      }
+  }
+
+  registroClick(
+    registroCorreo: HTMLInputElement,
+    registroContrasena: HTMLInputElement,
+    registroConfirmarContrasena: HTMLInputElement
+  ){
+    let correo = registroCorreo.value;
+    let contrasena = registroContrasena.value;
+    let confirmarContrasena = registroConfirmarContrasena.value;
+
+    if(
+      this.isNotEmpty(correo)&&
+      this.isNotEmpty(contrasena)&&
+      this.isNotEmpty(confirmarContrasena)&&
+      this.isAMatch(contrasena, confirmarContrasena)
+    ){
+      this.firebasetsAuth.createAccountWith(
+      {
+        email: correo,
+        password: contrasena,
+        onComplete: (uc) => {
+          alert("Tu cuenta fue creada satisfactoriamente");
+          registroCorreo.value = "";
+          registroContrasena.value = "";
+          registroConfirmarContrasena.value = ""
+        },
+        onFail: (err) => {
+          alert("Error al crear tu cuenta (mucho papeleo, ingresa bien tus datos❌)");
+        }
+      }
+    )}
+  }
+
+  reiniciar(
+    reinicioCorreo: HTMLInputElement,
+  ){
+    let correo = reinicioCorreo.value;
+
+    if(
+      this.isNotEmpty(correo))
+    {
+      this.firebasetsAuth.sendPasswordResetEmail(
+        {
+          email: correo,
+          onComplete: (err) => {
+            alert('Por favor revisar tu correo para recuperar su cuenta');
+          }
+        }
+      );
+    }
+    }
+
+  isNotEmpty(text: string){
+    return text != null && text.length > 0;
+  }
+
+  isAMatch(text: string, comparedWith: string){
+    return text == comparedWith;
+  }
 
   ovidasteContrasenaClick(){
     this.state = AutenticadorCompState.OLVIDASTE_CONTRASEÑA;
   }
-  registroClick(){
+  crearCuentaClick(){
     this.state = AutenticadorCompState.REGISTRO;
   }
   iniciarSesionClick(){
@@ -37,9 +126,9 @@ export class AutenticadorComponent {
       case AutenticadorCompState.LOGIN:
       return "Login";
       case AutenticadorCompState.REGISTRO:
-        return "Crear Cuenta";
+        return "Registro";
       case AutenticadorCompState.OLVIDASTE_CONTRASEÑA:
-        return "¿Olvidaste tu Contraseña?";
+        return "Olvidaste Contraseña";
     }
   }
 }

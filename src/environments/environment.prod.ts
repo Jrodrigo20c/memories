@@ -8,5 +8,5 @@ export const environment = {
         storageBucket: "memories-54cbb.firebasestorage.app",
         messagingSenderId: "377398970312",
         appId: "1:377398970312:web:1f517c2035c07ad49762fd"
-      };
-}
+      },
+};

@@ -4,23 +4,35 @@
             <mat-card-title>{{getStateText()}}</mat-card-title>
         </mat-card-header>
         <div *ngIf="isIniciarSesionState()">
-            <input placeholder="Correo" />
-            <input placeholder="Contraseña" type="password">
-            <button mat-flat-button color="warn">Iniciar Sesión</button>
+            <input #loginCorreo placeholder="Correo" />
+            <input #loginContrasena placeholder="Contraseña" type="password">
+            <button
+            (click)="login(
+                loginCorreo,
+                loginContrasena)"
+            mat-flat-button color="warn">Iniciar Sesión</button>
         </div>
         <div *ngIf="isRegistroState()">
-            <input placeholder="Correo" />
-            <input placeholder="Contraseña" type="password">
-            <input placeholder="Confirmar Contraseña">
-            <button mat-flat-button color="warn">Crear</button>
+            <input #registroCorreo placeholder="Correo" />
+            <input #registroContrasena placeholder="Contraseña" type="password">
+            <input #registroConfirmarContrasena placeholder="Confirmar Contraseña">
+            <button 
+            (click)="registroClick(
+                registroCorreo,
+                registroContrasena,
+                registroConfirmarContrasena)"
+            mat-flat-button color="warn">Crear</button>
         </div>
         <div *ngIf="isOlvidasteContrasenaState()">
-            <input placeholder="Correo">
-            <button mat-flat-button color="warn">Reiniciar</button>
+            <input #reinicioCorreo placeholder="Correo">
+            <button
+            (click)="reiniciar(
+                reinicioCorreo)"
+            mat-flat-button color="warn">Reiniciar</button>
         </div>
         <mat-card-actions aling="end">
             <button mat-flat-button (click)="ovidasteContrasenaClick()">¿Olvidaste tu Contraseña?</button>
-            <button mat-flat-button (click)="registroClick()">Crear Cuenta</button>
+            <button mat-flat-button (click)="crearCuentaClick()">Crear Cuenta</button>
             <button mat-flat-button (click)="iniciarSesionClick()">Iniciar Sesión</button>
         </mat-card-actions>
     </mat-card>
