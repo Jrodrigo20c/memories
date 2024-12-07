@@ -4,17 +4,21 @@ import { AutenticadorComponent } from './tools/autenticador/autenticador.compone
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FirebaseTSAuth } from 'firebasets/firebasetsAuth/firebaseTSAuth';
 import { NgIf } from '@angular/common';
-
+import { PerfilComponent } from './tools/perfil/perfil.component';
+import { FirebaseTSFirestore } from 'firebasets/firebasetsFirestore/firebaseTSFirestore';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgIf],
+  imports: [RouterOutlet, NgIf, PerfilComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'memories';
   auth = new FirebaseTSAuth();
+  firestore = new FirebaseTSFirestore();
+  userTienePerfil = true;
+  userDocument: userDocument | null = null;
   
   constructor(private loginSheet: MatBottomSheet,
     private router: Router
@@ -28,13 +32,14 @@ export class AppComponent {
               
             },
             whenSignedOut: user => {
-              
+              this.userDocument = null;
+              this.userTienePerfil = false;
             },
             whenSignedInAndEmailNotVerified: user => {
               this.router.navigate(["correoVerificacion"]);
             },
             whenSignedInAndEmailVerified: user => {
-
+              this.obtenerPerfil();
             },
             whenChanged: user => {
 
@@ -45,6 +50,32 @@ export class AppComponent {
     );
   }
   
+obtenerPerfil(){
+  const currentUser = this.auth.getAuth().currentUser;
+  if (!currentUser) {
+    console.warn("Usuario no autenticado. No se puede obtener el perfil.");
+    this.userTienePerfil = false;
+    return;
+  }
+
+  this.firestore.listenToDocument(
+    {
+      name: "Obteniendo documento",
+      path: ["Usuarios", currentUser.uid],
+      onUpdate: (result) => {
+        this.userDocument = <userDocument>result.data();
+        this.userTienePerfil = result.exists;
+        //if (result.exists) {
+        //  this.userDocument = result.data() as userDocument;
+        //  this.userTienePerfil = true;
+        //} else {
+        //  this.userTienePerfil = false;
+        //}
+      }
+    }
+  );
+}
+
   salirClick(){
     this.auth.signOut();
   }
@@ -56,4 +87,9 @@ export class AppComponent {
   accederClick(){
     this.loginSheet.open(AutenticadorComponent);
   }
+}
+
+export interface userDocument {
+  publicName: string;
+  description: string;
 }

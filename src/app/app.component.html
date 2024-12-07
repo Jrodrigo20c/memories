@@ -5,6 +5,7 @@
       </div>
       <div id="nav-bar-right">
           <div *ngIf="!conectado()" (click)="accederClick()" class="nav-bar-items"><br>Acceder</div>
+          <div *ngIf="conectado() && userTienePerfil" class="nav-bar-items">Hola {{userDocument?.publicName}}</div>
           <div *ngIf="conectado()" (click)="salirClick()" class="nav-bar-items">Salir</div>
           
       </div>
@@ -12,4 +13,6 @@
 </div>
 
 <router-outlet></router-outlet>
+
+<app-perfil [show]="conectado() && !userTienePerfil"></app-perfil>
 

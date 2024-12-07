@@ -1,4 +1,56 @@
-#email-verification {
+#correo-verificacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url("../../../assets/memories.jpg");
+  }
+  
+  #content {
+    background: transparent; 
+    padding: 2rem 3rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
-    margin-top: 8em;
-}
+    max-width: 400px;
+    width: 100%;
+  }
+
+  #white{
+    background: white;
+    border-radius: 1em;
+  }
+  
+  h1 {
+    color: #6a11cb;
+    font-family: 'Poppins', sans-serif; 
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+  }
+  
+  p {
+    color: #555555;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    font-size: 1rem;
+  }
+  
+  #btn-verify {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #2575fc;
+    color: #ffffff;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  #btn-verify:hover {
+    background-color: #6a11cb;
+    transform: scale(1.05); 
+    box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3); 
+  }
+  

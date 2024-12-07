@@ -1,0 +1,13 @@
+<div id="perfil">
+    <div [ngClass]="{'active': show, 'idle': !show}">
+        <div id="perfil-content">
+            <input #nombreInput placeholder="Nombre">
+            <textarea #descripcionInput placeholder="Descripción"></textarea>
+            <button 
+            (click)="continuarClick(
+                nombreInput,
+                descripcionInput)"
+            mat-flat-button color="warn">Continuar</button>
+        </div>
+    </div>  
+</div>

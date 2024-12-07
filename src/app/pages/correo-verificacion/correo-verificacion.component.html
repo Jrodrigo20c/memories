@@ -1,4 +1,12 @@
-<div id="correo-verificacion">
-    <h1>Correo no verificado</h1>
-    <button mat-flat-button (click)="reenviarClick()">Reenviar verificación</button>
-</div>
+<div id="correo-verificacion" class="container">
+    <div id="content">
+      <div id="white">
+        <h1>¡Verifica tu correo!</h1>
+        <p>Hemos enviado un correo de verificación. Por favor, revisa tu bandeja de entrada o carpeta de spam.</p>
+      </div>
+      <button mat-flat-button color="accent" (click)="reenviarClick()" id="btn-verify">
+        Reenviar
+      </button>
+    </div>
+  </div>
+  

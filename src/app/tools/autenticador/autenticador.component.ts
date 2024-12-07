@@ -20,6 +20,7 @@ export class AutenticadorComponent {
 
   ngOnInit(): void {}
 
+
   login(
     loginCorreo: HTMLInputElement,
     loginContrasena: HTMLInputElement,
