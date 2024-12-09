@@ -3,7 +3,7 @@
         <mat-card-title>Crear publicación</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <textarea placeholder="Escibe algo..."></textarea>
+        <textarea #comentarioInput placeholder="Escibe algo..."></textarea>
         <div *ngIf="imagenPrevia" id="post-preview">
             <img [src]="imagenPrevia" id="post-imagen-previa" alt="Vista previa de la imagen">
         </div>
@@ -20,6 +20,6 @@
                     <mat-icon>add_a_photo</mat-icon>Subir imagen
                 </label>
             </button>
-            <button mat-raised-button color="accent">Publicar</button>
+            <button (click)="publicacionClick(comentarioInput)" mat-raised-button color="accent">Publicar</button>
         </mat-card-actions>
 </mat-card>
