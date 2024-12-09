@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 import { FirebaseTSAuth } from 'firebasets/firebasetsAuth/firebaseTSAuth';
 import { FirebaseTSFirestore } from 'firebasets/firebasetsFirestore/firebaseTSFirestore';
 
@@ -18,7 +19,7 @@ export class PerfilComponent implements OnInit {
   firestore: FirebaseTSFirestore;
   auth: FirebaseTSAuth;
 
-  constructor(){
+  constructor(private router: Router){
     this.firestore = new FirebaseTSFirestore();
     this.auth = new FirebaseTSAuth();
   }
@@ -58,6 +59,7 @@ export class PerfilComponent implements OnInit {
           nombreInput.value = "";
           descripcionInput.value = "";
           this.togglePerfil();
+          this.router.navigate(['postFeed']);
         },
         onFail: (err) => {
           console.error("Error creando el perfil:", err);

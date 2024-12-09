@@ -18,77 +18,69 @@ export class AppComponent {
   auth = new FirebaseTSAuth();
   firestore = new FirebaseTSFirestore();
   userTienePerfil = true;
+  mostrarPerfil = false;
   userDocument: userDocument | null = null;
   
-  constructor(private loginSheet: MatBottomSheet,
-    private router: Router
-  ){
+  constructor(private loginSheet: MatBottomSheet, private router: Router) {
     this.auth.listenToSignInStateChanges(
       user => {
-        this.auth.checkSignInState(
-          {
-            whenSignedIn: user => {
-              
-              
+        if (user) {
+          this.auth.checkSignInState({
+            whenSignedIn: (user) => {
+              if (user.emailVerified) {
+                this.obtenerPerfil(); 
+              } else {
+                this.router.navigate(['correoVerificacion']); 
+              }
             },
-            whenSignedOut: user => {
-              this.userDocument = null;
+            whenSignedOut: () => {
+              console.log('Usuario no autenticado');
               this.userTienePerfil = false;
-            },
-            whenSignedInAndEmailNotVerified: user => {
-              this.router.navigate(["correoVerificacion"]);
-            },
-            whenSignedInAndEmailVerified: user => {
-              this.obtenerPerfil();
-            },
-            whenChanged: user => {
-
+              this.mostrarPerfil = false;
             }
-          }
-        );
-      }
-    );
-  }
-  
-obtenerPerfil(){
-  const currentUser = this.auth.getAuth().currentUser;
-  if (!currentUser) {
-    console.warn("Usuario no autenticado. No se puede obtener el perfil.");
-    this.userTienePerfil = false;
-    return;
-  }
-
-  this.firestore.listenToDocument(
-    {
-      name: "Obteniendo documento",
-      path: ["Usuarios", currentUser.uid],
-      onUpdate: (result) => {
-        this.userDocument = <userDocument>result.data();
-        this.userTienePerfil = result.exists;
-        //if (result.exists) {
-        //  this.userDocument = result.data() as userDocument;
-        //  this.userTienePerfil = true;
-        //} else {
-        //  this.userTienePerfil = false;
-        //}
-      }
+          });
+        }
+      });
     }
-  );
-}
-
-  salirClick(){
-    this.auth.signOut();
+  
+    obtenerPerfil() {
+      const currentUser = this.auth.getAuth().currentUser;
+      if (!currentUser) {
+        console.warn('Usuario no autenticado. No se puede obtener el perfil.');
+        this.userTienePerfil = false;
+        return;
+      }
+  
+      this.firestore.getDocument({
+        
+        path: ['Usuarios', currentUser.uid],
+        onComplete: (result) => {
+          this.userTienePerfil = result.exists;
+          if (this.userTienePerfil) {
+            this.router.navigate(['postFeed']); 
+          } else {
+            this.mostrarPerfil = true;
+            console.warn('No se encontró un perfil. Mostrando la interfaz de creación de perfil.');
+          }
+        },
+        onFail: (err) => {
+          console.error('Error al verificar el perfil:', err);
+        },
+      });
+    }
+  
+    accederClick() {
+      this.loginSheet.open(AutenticadorComponent);
+    }
+  
+    salirClick() {
+      this.auth.signOut();
+    }
+  
+    conectado() {
+      return this.auth.isSignedIn();
+    }
   }
-
-  conectado(){
-    return this.auth.isSignedIn();
-  }
-
-  accederClick(){
-    this.loginSheet.open(AutenticadorComponent);
-  }
-}
-
 export interface userDocument {
   publicName: string;
   description: string;
