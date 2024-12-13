@@ -14,7 +14,8 @@ import { FirebaseTSFirestore } from 'firebasets/firebasetsFirestore/firebaseTSFi
 })
 export class PerfilComponent implements OnInit {
   
-  @Input() show: boolean = false;
+  @Input() show = true;
+  imagePreview: string | null = null;
 
   firestore: FirebaseTSFirestore;
   auth: FirebaseTSAuth;
@@ -24,20 +25,30 @@ export class PerfilComponent implements OnInit {
     this.auth = new FirebaseTSAuth();
   }
 
-  togglePerfil() {
-    this.show = !this.show;
+  ngOnInit(){
   }
 
-  ngOnInit(){
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   continuarClick(
     nombreInput: HTMLInputElement,
+    apellidoInput: HTMLInputElement,
     descripcionInput: HTMLTextAreaElement
   ) {
     let nombre = nombreInput.value.trim();
+    let apellido = apellidoInput.value.trim();
     let descripcion = descripcionInput.value.trim();
-    if (!nombre || !descripcion) {
+    if (!nombre || !descripcion || !apellido) {
       alert("Por favor completar todos los campos");
       return;
     }
@@ -52,13 +63,15 @@ export class PerfilComponent implements OnInit {
         path: ["users", currentUser.uid],
         data: {
           publicName: nombre,
+          publicLastName: apellido,
           description: descripcion
         },
         onComplete: (docId) => {
           alert("Perfil creado");
           nombreInput.value = "";
+          apellidoInput.value = "";
           descripcionInput.value = "";
-          this.togglePerfil();
+          this.show = false;
           this.router.navigate(['postFeed']);
         },
         onFail: (err) => {

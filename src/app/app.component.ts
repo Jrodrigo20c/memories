@@ -19,7 +19,7 @@ export class AppComponent {
   firestore = new FirebaseTSFirestore();
   userTienePerfil = true;
   mostrarPerfil = false;
-  userDocument: userDocument | null = null;
+  userDocument?: UserDocument | null = null;
   
   constructor(private loginSheet: MatBottomSheet, private router: Router) {
     this.auth.listenToSignInStateChanges(
@@ -29,6 +29,7 @@ export class AppComponent {
             whenSignedIn: (user) => {
               if (user.emailVerified) {
                 this.obtenerPerfil(); 
+                this.userTienePerfil = true;
               } else {
                 this.router.navigate(['correoVerificacion']); 
               }
@@ -47,26 +48,23 @@ export class AppComponent {
       const currentUser = this.auth.getAuth().currentUser;
       if (!currentUser) {
         console.warn('Usuario no autenticado. No se puede obtener el perfil.');
-        this.userTienePerfil = false;
+        //this.userTienePerfil = false;
         return;
       }
   
-      this.firestore.getDocument({
-        
-        path: ['Usuarios', currentUser.uid],
-        onComplete: (result) => {
-          this.userTienePerfil = result.exists;
-          if (this.userTienePerfil) {
-            this.router.navigate(['postFeed']); 
-          } else {
-            this.mostrarPerfil = true;
-            console.warn('No se encontró un perfil. Mostrando la interfaz de creación de perfil.');
+      this.firestore.listenToDocument(
+        {
+          name: "Getting Document",
+          path: ["Users", currentUser.uid],
+          onUpdate: (result) => {
+            this.userDocument = <UserDocument>result.data();
+            this.userTienePerfil = result.exists; 
+            if(this.userTienePerfil) {
+              this.router.navigate(["postfeed"]);
+            } 
           }
-        },
-        onFail: (err) => {
-          console.error('Error al verificar el perfil:', err);
-        },
-      });
+        }
+      );
     }
   
     accederClick() {
@@ -81,7 +79,8 @@ export class AppComponent {
       return this.auth.isSignedIn();
     }
   }
-export interface userDocument {
+export interface UserDocument {
   publicName: string;
   description: string;
+  userId: string;
 }

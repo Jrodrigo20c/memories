@@ -28,7 +28,7 @@ export class PostComponent implements OnChanges {
   }
 
   comentarioClick(){
-    this.dialog.open(ComentariosComponent);
+    this.dialog.open(ComentariosComponent, {data: this.postData?.postId});
   }
 
   creadorInfo() {

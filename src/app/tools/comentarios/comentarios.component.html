@@ -3,8 +3,9 @@
 
 </div>
 <div id="reply-action-bar">
-    <button mat-flat-button color="warn">
+    <button mat-flat-button color="warn"
+    (click)="enviarClick(comentarioInput)">
         <mat-icon>send</mat-icon>
     </button>
-    <input placeholder="Comentar..." #commentInput>
+    <input placeholder="Comentar..." #comentarioInput>
 </div>
